@@ -1,5 +1,7 @@
 package com.willjs.sgt;
 
+import org.json.JSONObject;
+
 // Container for requests from server
 public class Request {
 
@@ -17,6 +19,10 @@ public class Request {
 	
 	public String getMessage(){
 		return _msg;
+	}
+	
+	public JSONObject getJSONMessage(){
+		return new JSONObject(getMessage());
 	}
 	
 	public String getRequest(){

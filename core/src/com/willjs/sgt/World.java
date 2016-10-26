@@ -1,5 +1,7 @@
 package com.willjs.sgt;
 
+import org.json.JSONObject;
+
 public class World implements MessageListener {
 	
 	private long _posx = 0;
@@ -12,16 +14,24 @@ public class World implements MessageListener {
 	public World(Server server){
 		_server = server;
 		_server.addMessageListener("YOURPOS", this);
+		_server.addMessageListener("NEARBY", this);
 		
 		
 		_server.send("WHEREAMI?", "");
+		_server.send("NEARBY?", "20000000000");
 	}
 
 
 	@Override
 	public void onMessage(Request r) {
-		if(r.getRequest().equals("YOURPOS")){
-			System.out.println("MSG");
+		if(r.getRequest().equals("YOURPOS")){ // we got the player's position
+			JSONObject coords = r.getJSONMessage();
+			_posx = coords.getLong("x");
+			_posy = coords.getLong("y");
+			_sectorx = coords.getLong("sectorx");
+			_sectory = coords.getLong("sectory");
+		}else if(r.getRequest().equals("NEARBY")){
+			
 		}
 	}
 	
