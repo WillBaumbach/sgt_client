@@ -40,27 +40,72 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class SpaceGameThing extends ApplicationAdapter 
 {
+	
 	Skin skin;
-	Stage stage;
-	InventoryScreen invScreen;
-	TextButton x;
+	Stage mainStage;
+	
+	// Screens
+	InventoryScreen menuScreenMain;
+	InventoryScreen shipScreen;
+	
+	// Buttons
+	TextButton x;					// Closes the window
+	TextButton shipButton;
+	TextButton inventoryButton;
+	TextButton planetButton;
+	TextButton unitsButton;
+	TextButton settingsButton;
+	
+	// Menus
+	Menu mainMenu;
+	Menu shipMenu;
 	
 	@Override
 	public void create ()
 	{
+		// Buttons
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		stage = new Stage(new ScreenViewport());
-		invScreen = new InventoryScreen("Inventory", skin);	
-		Gdx.input.setInputProcessor(stage);
+		inventoryButton = new TextButton("Inventory", skin);
+		shipButton = new TextButton("Ship", skin);
+		planetButton = new TextButton("Planet", skin);
+		settingsButton = new TextButton("Settings", skin);
+		unitsButton = new TextButton("Units", skin);
+		
+		//Stage(s)
+		mainStage = new Stage(new ScreenViewport());
+		
+		//Menu(s)
+		mainMenu = new Menu(skin);
+		mainMenu.addButton(shipButton);
+		mainMenu.addButton(unitsButton);
+		mainMenu.addButton(inventoryButton);
+		mainMenu.addButton(planetButton);
+		mainMenu.addButton(settingsButton);
+		shipMenu = new Menu(skin);
+		
+		
+		// Screens 
+		menuScreenMain = new InventoryScreen("Menu", skin, mainMenu);
+		menuScreenMain.add(mainMenu.getTable());
+		mainMenu.getTable().defaults().expand().fill();
+		shipScreen = new InventoryScreen("Ship", skin, shipMenu);
+		shipScreen.setWidth(400);
+		shipScreen.setHeight(400);
+		Gdx.input.setInputProcessor(mainStage);
 		
 		
 		
 		
 		
 		// Set the "x" in the corner of the inventory to close the window
-		invScreen.getCloseButton().addListener(new ChangeListener() {
+		menuScreenMain.getCloseButton().addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				invScreen.remove();
+				menuScreenMain.remove();
+			}
+		});
+		shipButton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				mainStage.addActor(shipScreen);
 			}
 		});
 	}
@@ -71,29 +116,38 @@ public class SpaceGameThing extends ApplicationAdapter
 	{
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-		stage.draw();
+		mainStage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+		mainStage.draw();
 		
-		//Checks if I is pressed and opens/closes inventory
+		//Checks if 'i' is pressed and opens/closes inventory
 		if(Gdx.input.isKeyPressed(Input.Keys.I))
 		{
-			if(invScreen.getStage() == null)
+			if(menuScreenMain.getStage() == null)
 			{
-				stage.addActor(invScreen);
+				mainStage.addActor(menuScreenMain);
 			}
 		}
+		if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
+		{
+			if(menuScreenMain.getStage() != null)
+			{
+				menuScreenMain.remove();
+			}
+		}
+		
+		
 	}
 	
 	@Override
 	public void resize (int width, int height) 
 	{
-		stage.getViewport().update(width, height, true);
+		mainStage.getViewport().update(width, height, true);
 	}
 
 	@Override
 	public void dispose () 
 	{
-		stage.dispose();
+		mainStage.dispose();
 		skin.dispose();
 	}
 }
