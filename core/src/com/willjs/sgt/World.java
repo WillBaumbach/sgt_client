@@ -9,16 +9,18 @@ public class World implements MessageListener {
 	private long _sectorx = 0;
 	private long _sectory = 0;
 	private Server _server;
+	private WorldRender render = new WorldRender();
 	
 	
 	public World(Server server){
 		_server = server;
 		_server.addMessageListener("YOURPOS", this);
 		_server.addMessageListener("NEARBY", this);
+		_server.addMessageListener("DISTANT", this);
 		
 		
 		_server.send("WHEREAMI?", "");
-		_server.send("NEARBY?", "20000000000");
+		_server.send("DISTANT?", "");
 	}
 
 
@@ -32,8 +34,11 @@ public class World implements MessageListener {
 			_sectory = coords.getLong("sectory");
 		}else if(r.getRequest().equals("NEARBY")){
 			
+		}else if(r.getRequest().equals("DISTANT")){
+			render.processWorldData(r);
 		}
 	}
+	
 	
 	
 	
