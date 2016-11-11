@@ -50,7 +50,6 @@ public class CelestialBody
 			_sprite.setSize(size, size);
 		}else{
 			
-			
 		}
 	}
 	
