@@ -50,7 +50,7 @@ public class CelestialBody
 			}
 		}else{
 			if(_star){
-				_sprite.setSize(0.5e10f,0.5e10f);
+				_sprite.setSize(.25e11f,.25e11f);
 			}else{
 				
 			}
@@ -59,7 +59,7 @@ public class CelestialBody
 	
 	// generates the celestial body sprite
 	public void createSprite(){
-		Texture texture = new Texture(Gdx.files.internal("Planet Test.png"));
+		Texture texture = new Texture(Gdx.files.internal("star.png"));
 		
 		_sprite = new Sprite(texture);
 		_sprite.setSize(0.5e10f,0.5e10f);
