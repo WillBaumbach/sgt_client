@@ -42,24 +42,21 @@ public class CelestialBody
 			return;
 		}
 		
-		if(zoomwidth > 1e12){
-			if(_star){
-				_sprite.setSize(0.5e11f,0.5e11f);
-			}else{
-				
-			}
+		if(_star){
+			float zoomSize = 0.01f * zoomwidth;
+			float actualSize = 0.5e11f;
+			
+			float size = Math.max(zoomSize, actualSize);
+			_sprite.setSize(size, size);
 		}else{
-			if(_star){
-				_sprite.setSize(0.5e10f,0.5e10f);
-			}else{
-				
-			}
+			
+			
 		}
 	}
 	
 	// generates the celestial body sprite
 	public void createSprite(){
-		Texture texture = new Texture(Gdx.files.internal("Planet Test.png"));
+		Texture texture = new Texture(Gdx.files.internal("star.png"));
 		
 		_sprite = new Sprite(texture);
 		_sprite.setSize(0.5e10f,0.5e10f);

@@ -19,6 +19,12 @@ public class World implements MessageListener {
 	private float _mass;
 	private WorldRender render = new WorldRender();
 	
+	private long _lastNearbyRequestx = 0;
+	private long _lastNearbyRequesty = 0;
+	
+	private final long NEARBY_DISTANCE = (long)1e13;
+	private final long NEARBY_ZOOM = (long)1e14;
+	
 	
 	public World(Server server){
 		_server = server;
@@ -29,6 +35,7 @@ public class World implements MessageListener {
 		
 		_server.send("WHEREAMI?", "");
 		_server.send("DISTANT?", "");
+		_server.send("NEARBY?", "");
 	}
 
 
@@ -41,7 +48,7 @@ public class World implements MessageListener {
 			_sectorx = coords.getLong("sectorx");
 			_sectory = coords.getLong("sectory");
 		}else if(r.getRequest().equals("NEARBY")){
-			
+			render.processWorldData(r);
 		}else if(r.getRequest().equals("DISTANT")){
 			render.processWorldData(r);
 		}
@@ -86,6 +93,16 @@ public class World implements MessageListener {
 		_posx = _posx + (long)(_velocityx*deltaTime);
 		_posy = _posy + (long)(_velocityy*deltaTime);
 		render.setCenterPosistion(_posx, _posy);
+		
+		if(Math.abs(_posx - _lastNearbyRequestx) > NEARBY_DISTANCE || 
+				Math.abs(_posy - _lastNearbyRequesty) > NEARBY_DISTANCE){
+			if(render.getZoomWidth() > NEARBY_ZOOM){
+				_server.send("NEARBY?", "");
+				
+				_lastNearbyRequestx = _posx;
+				_lastNearbyRequesty = _posy;
+			}
+		}
 	}
 	
 	
