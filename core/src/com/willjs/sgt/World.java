@@ -2,6 +2,9 @@ package com.willjs.sgt;
 
 import org.json.JSONObject;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+
 public class World implements MessageListener {
 	
 	private long _posx = 0;
@@ -9,6 +12,11 @@ public class World implements MessageListener {
 	private long _sectorx = 0;
 	private long _sectory = 0;
 	private Server _server;
+	private float _velocityx;
+	private float _velocityy;
+	private float _acelerationx;
+	private float _acelerationy;
+	private float _mass;
 	private WorldRender render = new WorldRender();
 	
 	
@@ -37,6 +45,47 @@ public class World implements MessageListener {
 		}else if(r.getRequest().equals("DISTANT")){
 			render.processWorldData(r);
 		}
+	}
+	
+	WorldRender getRenderer(){
+		return render;
+	}
+	
+	void processInput(){
+		if(Gdx.input.isKeyPressed(Input.Keys.Q)){
+			render.setZoomWidth((long)((float)render.getZoomWidth()*0.97f));
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.E)){
+			render.setZoomWidth((long)((float)render.getZoomWidth()*1.03f));
+		}
+		
+		if(Gdx.input.isKeyPressed(Input.Keys.W)){
+			_acelerationy = 1e12f;
+		}else if(Gdx.input.isKeyPressed(Input.Keys.S)){
+			_acelerationy = -1e12f;
+		}else{
+			_acelerationy = 0;
+		}
+		
+		
+		if(Gdx.input.isKeyPressed(Input.Keys.A)){
+			_acelerationx = -1e12f;
+		}else if(Gdx.input.isKeyPressed(Input.Keys.D)){
+			_acelerationx = 1e12f;
+		}else{
+			_acelerationx = 0.0f;
+		}
+	}
+
+
+	// deltaTime passed since last call
+	public void update(float deltaTime) {
+		_velocityx = _velocityx + deltaTime * _acelerationx;
+		_velocityy = _velocityy + deltaTime * _acelerationy;
+		
+		_posx = _posx + (long)(_velocityx*deltaTime);
+		_posy = _posy + (long)(_velocityy*deltaTime);
+		render.setCenterPosistion(_posx, _posy);
 	}
 	
 	

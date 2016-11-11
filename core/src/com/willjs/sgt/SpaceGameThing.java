@@ -52,6 +52,7 @@ public class SpaceGameThing extends ApplicationAdapter
 	Sprite sprite;
 	OrthographicCamera cam;
 	
+	
 	// Screens
 	InventoryScreen menuScreenMain, shipScreen, inventoryScreen, planetScreen, unitsScreen, settingsScreen;
 
@@ -172,10 +173,12 @@ public class SpaceGameThing extends ApplicationAdapter
 		//batch.setProjectionMatrix(cam.combined);
 		
 		
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
+		//Gdx.gl.glClearColor(0f, 0f, 0f, 1);
+		_world.getRenderer().preRender(batch);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		sprite.draw(batch);
+		_world.getRenderer().render(batch);
 		batch.end();
 		mainStage.draw();
 		//mainStage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
@@ -198,12 +201,16 @@ public class SpaceGameThing extends ApplicationAdapter
 			}
 		}
 		
+		_world.processInput();
+		_world.update(Gdx.graphics.getDeltaTime());
+		
 		
 	}
 	
 	@Override
 	public void resize (int width, int height) 
 	{
+		_world.getRenderer().resize();
 		//mainStage.getViewport().update(width, height, true);
 	}
 
