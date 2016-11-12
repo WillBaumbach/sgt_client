@@ -118,16 +118,16 @@ public class World implements MessageListener {
 		} else {
 			// Setting x velocity at a far distance based on acceleration
 			if (_acelerationx >= 0){
-				_velocityx = (float) Math.min(_velocityx + deltaTime * _acelerationx, 1e14);
+				_velocityx = (float) Math.min(_velocityx + deltaTime * _acelerationx, .5e14);
 			} else {
-				_velocityx = (float) Math.max(_velocityx + deltaTime * _acelerationx, -1e14);
+				_velocityx = (float) Math.max(_velocityx + deltaTime * _acelerationx, -.5e14);
 			}
 			// Setting y velocity at a far distance based on acceleration
 			if(_acelerationy >= 0)
 			{
-				_velocityy = (float) Math.min(_velocityy + deltaTime * _acelerationy, 1e14);
+				_velocityy = (float) Math.min(_velocityy + deltaTime * _acelerationy, .5e14);
 			} else {
-				_velocityy = (float) Math.max(_velocityy + deltaTime * _acelerationy, -1e14);
+				_velocityy = (float) Math.max(_velocityy + deltaTime * _acelerationy, -5.e14);
 			}
 		}
 		_posx = _posx + (long)(_velocityx*deltaTime);

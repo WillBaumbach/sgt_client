@@ -45,7 +45,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class SpaceGameThing extends ApplicationAdapter 
 {
-	
 	Skin skin;
 	Stage mainStage;
 	Texture texture;
