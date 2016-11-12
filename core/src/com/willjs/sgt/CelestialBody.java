@@ -71,7 +71,6 @@ public class CelestialBody
 		
 		_sprite = new Sprite(texture);
 		_sprite.setSize(0.5e10f,0.5e10f);
-		//Random rand = new Random();
 		_sprite.setPosition(getXCoord(),getYCoord());
 	}
 

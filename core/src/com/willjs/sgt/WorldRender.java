@@ -6,11 +6,15 @@ import org.json.JSONObject;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class WorldRender 
 {
+	private Texture texture = new Texture(Gdx.files.internal("spaceship.png"));
+	private Sprite spaceship = new Sprite(texture);
+	
 	private ArrayList<CelestialBody> _cbArrayD = new ArrayList<CelestialBody>();
 	private ArrayList<CelestialBody> _cbArrayN = new ArrayList<CelestialBody>();
 	private ArrayList<CelestialBody> _cbAll = new ArrayList<CelestialBody>();
@@ -111,5 +115,8 @@ public class WorldRender
 			}
 			s.draw(batch);
 		}
+		spaceship.setSize((float)(_zoomWidth * .01) , (float)(_zoomWidth * .01));
+		spaceship.setPosition(_cam.position.x,_cam.position.y);
+		spaceship.draw(batch);
 	}
 }

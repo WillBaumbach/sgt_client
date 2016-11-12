@@ -1,7 +1,5 @@
 package com.willjs.sgt.desktop;
 
-import java.util.concurrent.TimeUnit;
-
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.willjs.sgt.MessageListener;
