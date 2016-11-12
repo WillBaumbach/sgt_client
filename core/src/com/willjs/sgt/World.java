@@ -86,14 +86,48 @@ public class World implements MessageListener {
 		}else{
 			_acelerationx = 0.0f;
 		}
+		
+		if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+			_velocityx = (float) (_velocityx * 0.95);
+			_velocityy = (float) (_velocityy * 0.95);
+		}
 	}
 
 
 	// deltaTime passed since last call
 	public void update(float deltaTime) {
-		_velocityx = _velocityx + deltaTime * _acelerationx;
-		_velocityy = _velocityy + deltaTime * _acelerationy;
 		
+		// Checking if your zoom is "close" or "far" to determine velocity
+		if (render.getZoomWidth() < 1e12)
+		{
+			// Setting x veloicty at a close distance based on acceleration
+			if (_acelerationx >= 0){
+				_velocityx = (float) Math.min(_velocityx + deltaTime * _acelerationx, 5e10);
+			} else {
+				_velocityx = (float) Math.max(_velocityx + deltaTime * _acelerationx, -5e10);
+			}
+			// Setting y velocity at a close distance based on acceleration
+			if(_acelerationy >= 0)
+			{
+				_velocityy = (float) Math.min(_velocityy + deltaTime * _acelerationy, 5e10);
+			} else {
+				_velocityy = (float) Math.max(_velocityy + deltaTime * _acelerationy, -5e10);
+			}
+		} else {
+			// Setting x velocity at a far distance based on acceleration
+			if (_acelerationx >= 0){
+				_velocityx = (float) Math.min(_velocityx + deltaTime * _acelerationx, 1e14);
+			} else {
+				_velocityx = (float) Math.max(_velocityx + deltaTime * _acelerationx, -1e14);
+			}
+			// Setting y velocity at a far distance based on acceleration
+			if(_acelerationy >= 0)
+			{
+				_velocityy = (float) Math.min(_velocityy + deltaTime * _acelerationy, 1e14);
+			} else {
+				_velocityy = (float) Math.max(_velocityy + deltaTime * _acelerationy, -1e14);
+			}
+		}
 		_posx = _posx + (long)(_velocityx*deltaTime);
 		_posy = _posy + (long)(_velocityy*deltaTime);
 		render.setCenterPosistion(_posx, _posy);
