@@ -11,7 +11,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class WorldRender 
 {
-	private ArrayList<CelestialBody> _cbArray = new ArrayList<CelestialBody>();
+	private ArrayList<CelestialBody> _cbArrayD = new ArrayList<CelestialBody>();
+	private ArrayList<CelestialBody> _cbArrayN = new ArrayList<CelestialBody>();
+	private ArrayList<CelestialBody> _cbAll = new ArrayList<CelestialBody>();
+	
 	private OrthographicCamera _cam;
 	private float _windowHeight, _windowWidth;
 	private long _zoomWidth;
@@ -23,8 +26,13 @@ public class WorldRender
 	
 	public void processWorldData(Request r)
 	{
-		if(r.getRequest().equals("DISTANT")){
-			_cbArray.clear();
+		if(r.getRequest().equals("DISTANT") || r.getRequest().equals("NEARBY")){
+			ArrayList<CelestialBody> container = _cbArrayD;
+			if(r.getRequest().equals("NEARBY")){ // we only want to clear nearby planets here
+				container = _cbArrayN;
+			}
+			
+			container.clear();
 			JSONArray coords = r.getJSONMessage().getJSONArray("cbs");
 			for(Object obj : coords)
 			{
@@ -32,14 +40,22 @@ public class WorldRender
 				boolean star = cb.getString("type").equals("star");
 				CelestialBody body = new CelestialBody(cb.getLong("x"), cb.getLong("y"), star);
 				
-				_cbArray.add(body);
+				container.add(body);
 			}
+			
+			ArrayList<CelestialBody> cbAllNew = new ArrayList<CelestialBody>();
+			for(CelestialBody x : _cbArrayD){
+				cbAllNew.add(x);
+			}for(CelestialBody x : _cbArrayN){
+				cbAllNew.add(x);
+			}
+			_cbAll = cbAllNew;
 		}
 	}	
 	
 	public ArrayList<CelestialBody> getCBArray()
 	{
-		return _cbArray;
+		return _cbAll;
 	}
 	
 	
@@ -54,7 +70,7 @@ public class WorldRender
 		_zoomWidth = w;
 		resize();
 		
-		for(CelestialBody cb : _cbArray){
+		for(CelestialBody cb : _cbAll){
 			cb.setScale(_zoomWidth);
 		}
 	}
@@ -87,7 +103,7 @@ public class WorldRender
 	}
 	
 	public void render(SpriteBatch batch){
-		for(CelestialBody cb : _cbArray){
+		for(CelestialBody cb : _cbAll){
 			Sprite s = cb.getSprite();
 			if(s == null){
 				cb.createSprite();

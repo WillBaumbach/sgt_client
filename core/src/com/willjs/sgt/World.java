@@ -23,7 +23,7 @@ public class World implements MessageListener {
 	private long _lastNearbyRequesty = 0;
 	
 	private final long NEARBY_DISTANCE = (long)1e13;
-	private final long NEARBY_ZOOM = (long)1e14;
+	private final long NEARBY_ZOOM = (long)1e13;
 	
 	
 	public World(Server server){
@@ -34,8 +34,7 @@ public class World implements MessageListener {
 		
 		
 		_server.send("WHEREAMI?", "");
-		_server.send("DISTANT?", "");
-		_server.send("NEARBY?", "");
+		
 	}
 
 
@@ -47,7 +46,12 @@ public class World implements MessageListener {
 			_posy = coords.getLong("y");
 			_sectorx = coords.getLong("sectorx");
 			_sectory = coords.getLong("sectory");
+			
+			_server.send("DISTANT?", "");
+			_server.send("NEARBY?", Long.toString(NEARBY_ZOOM));
 		}else if(r.getRequest().equals("NEARBY")){
+			_lastNearbyRequestx = _posx;
+			_lastNearbyRequesty = _posy;
 			render.processWorldData(r);
 		}else if(r.getRequest().equals("DISTANT")){
 			render.processWorldData(r);
@@ -96,8 +100,8 @@ public class World implements MessageListener {
 		
 		if(Math.abs(_posx - _lastNearbyRequestx) > NEARBY_DISTANCE || 
 				Math.abs(_posy - _lastNearbyRequesty) > NEARBY_DISTANCE){
-			if(render.getZoomWidth() > NEARBY_ZOOM){
-				_server.send("NEARBY?", "");
+			if(render.getZoomWidth() < NEARBY_ZOOM){
+				_server.send("NEARBY?", Long.toString(NEARBY_ZOOM));
 				
 				_lastNearbyRequestx = _posx;
 				_lastNearbyRequesty = _posy;

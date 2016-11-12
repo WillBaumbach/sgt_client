@@ -78,11 +78,6 @@ public class SpaceGameThing extends ApplicationAdapter
 	@Override
 	public void create ()
 	{
-<<<<<<< HEAD
-
-=======
-		
->>>>>>> d7c3f6f275e2d56fda303a35685599e19b7c6e3c
 		_server = new Server("ws://localhost:1111", "1");
 		while(!_server.isAuthenticated()){ // wait for client to connect
 			try {
