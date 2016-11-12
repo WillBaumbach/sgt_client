@@ -21,6 +21,7 @@ public class World implements MessageListener {
 	
 	private long _lastNearbyRequestx = 0;
 	private long _lastNearbyRequesty = 0;
+	private long _lastSentLocationTime = 0;
 	
 	private final long NEARBY_DISTANCE = (long)1e13;
 	private final long NEARBY_ZOOM = (long)1e13;
@@ -32,6 +33,7 @@ public class World implements MessageListener {
 		_server.addMessageListener("NEARBY", this);
 		_server.addMessageListener("DISTANT", this);
 		
+		_lastSentLocationTime = System.currentTimeMillis();
 		
 		_server.send("WHEREAMI?", "");
 		
@@ -131,6 +133,19 @@ public class World implements MessageListener {
 		_posx = _posx + (long)(_velocityx*deltaTime);
 		_posy = _posy + (long)(_velocityy*deltaTime);
 		render.setCenterPosistion(_posx, _posy);
+		
+		if(_velocityx != 0 || _velocityy != 0){
+			if(System.currentTimeMillis() - _lastSentLocationTime > 50){
+				JSONObject notify = new JSONObject();
+				notify.put("x", _posx);
+				notify.put("y", _posy);
+				notify.put("sx", _sectorx);
+				notify.put("sy", _sectory);
+				_server.send("IMOVED", notify.toString());
+				
+				_lastSentLocationTime = System.currentTimeMillis();
+			}
+		}
 		
 		if(Math.abs(_posx - _lastNearbyRequestx) > NEARBY_DISTANCE || 
 				Math.abs(_posy - _lastNearbyRequesty) > NEARBY_DISTANCE){
