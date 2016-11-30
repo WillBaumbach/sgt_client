@@ -1,4 +1,6 @@
 package com.willjs.sgt;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -7,13 +9,14 @@ import org.json.JSONObject;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class WorldRender 
 {
-	private Texture texture = new Texture(Gdx.files.internal("spaceship.png"));
-	private Sprite spaceship = new Sprite(texture);
+	private BitmapFont font = new BitmapFont();
+	private Ship _spaceship = new Ship();
 	
 	private ArrayList<CelestialBody> _cbArrayD = new ArrayList<CelestialBody>();
 	private ArrayList<CelestialBody> _cbArrayN = new ArrayList<CelestialBody>();
@@ -22,6 +25,12 @@ public class WorldRender
 	private OrthographicCamera _cam;
 	private float _windowHeight, _windowWidth;
 	private long _zoomWidth;
+	
+	
+	public Ship getSpaceship()
+	{
+		return _spaceship;
+	}
 	
 	public WorldRender(){
 		setZoomWidth((long)1e12);
@@ -77,6 +86,10 @@ public class WorldRender
 		for(CelestialBody cb : _cbAll){
 			cb.setScale(_zoomWidth);
 		}
+		float zoomSize = 0.015f * _zoomWidth;
+		float actualSize = 0.5e10f;
+		float size = Math.max(zoomSize, actualSize);
+		_spaceship.getSprite().setSize(size,size);
 	}
 	
 	public long getZoomWidth(){
@@ -102,8 +115,15 @@ public class WorldRender
 		batch.setProjectionMatrix(_cam.combined);
 	}
 	
-	public void postRender(){
-		
+	public void postRender(SpriteBatch batch){
+		/*
+		NumberFormat formatter = new DecimalFormat();
+		formatter = new DecimalFormat("0.#####E0");
+		System.out.println(formatter.format(_zoomWidth));
+	    String zoom = formatter.format(_zoomWidth);
+	    font.draw(batch, zoom, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	    font.setColor(1, 1, 1, 1);
+	    */
 	}
 	
 	public void render(SpriteBatch batch){
@@ -115,8 +135,9 @@ public class WorldRender
 			}
 			s.draw(batch);
 		}
-		spaceship.setSize((float)(_zoomWidth * .01) , (float)(_zoomWidth * .01));
-		spaceship.setPosition(_cam.position.x,_cam.position.y);
-		spaceship.draw(batch);
+		//_spaceship.setSize((float)(_zoomWidth * .015) , (float)(_zoomWidth * .015));
+		_spaceship.getSprite().setPosition(_cam.position.x,_cam.position.y);
+		//spaceship.setRotation((float) Math.atan(world.getVelocityy()/world.getVelocityx()));
+		_spaceship.getSprite().draw(batch);
 	}
 }

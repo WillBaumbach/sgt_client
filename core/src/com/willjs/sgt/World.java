@@ -73,18 +73,18 @@ public class World implements MessageListener {
 		}
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.W)){
-			_acelerationy = 1e12f;
+			_acelerationy = 1e11f;
 		}else if(Gdx.input.isKeyPressed(Input.Keys.S)){
-			_acelerationy = -1e12f;
+			_acelerationy = -1e11f;
 		}else{
 			_acelerationy = 0;
 		}
 		
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.A)){
-			_acelerationx = -1e12f;
+			_acelerationx = -1e11f;
 		}else if(Gdx.input.isKeyPressed(Input.Keys.D)){
-			_acelerationx = 1e12f;
+			_acelerationx = 1e11f;
 		}else{
 			_acelerationx = 0.0f;
 		}
@@ -98,38 +98,64 @@ public class World implements MessageListener {
 
 	// deltaTime passed since last call
 	public void update(float deltaTime) {
-		
+		System.out.println(render.getZoomWidth() + " : " + _velocityx);
 		// Checking if your zoom is "close" or "far" to determine velocity
-		if (render.getZoomWidth() < 1e12)
+		if(render.getZoomWidth() < 2e11)
 		{
-			// Setting x veloicty at a close distance based on acceleration
 			if (_acelerationx >= 0){
-				_velocityx = (float) Math.min(_velocityx + deltaTime * _acelerationx, 5e10);
+				_velocityx = (float) Math.min(_velocityx + deltaTime * _acelerationx, 7e9);
 			} else {
-				_velocityx = (float) Math.max(_velocityx + deltaTime * _acelerationx, -5e10);
+				_velocityx = (float) Math.max(_velocityx + deltaTime * _acelerationx, -7e9);
 			}
 			// Setting y velocity at a close distance based on acceleration
 			if(_acelerationy >= 0)
 			{
-				_velocityy = (float) Math.min(_velocityy + deltaTime * _acelerationy, 5e10);
+				_velocityy = (float) Math.min(_velocityy + deltaTime * _acelerationy, 7e9);
 			} else {
-				_velocityy = (float) Math.max(_velocityy + deltaTime * _acelerationy, -5e10);
+				_velocityy = (float) Math.max(_velocityy + deltaTime * _acelerationy, -7e9);
 			}
-		} else {
-			// Setting x velocity at a far distance based on acceleration
+		}
+		else if(render.getZoomWidth() < 5e12)
+		{
+			// Setting x veloicty at a close distance based on acceleration
+			if (_acelerationx >= 0){
+				_velocityx = (float) Math.min(_velocityx + deltaTime * _acelerationx, 1.5e11);
+			} else {
+				_velocityx = (float) Math.max(_velocityx + deltaTime * _acelerationx, -1.5e11);
+			}
+			// Setting y velocity at a close distance based on acceleration
+			if(_acelerationy >= 0)
+			{
+				_velocityy = (float) Math.min(_velocityy + deltaTime * _acelerationy, 1.5e11);
+			} else {
+				_velocityy = (float) Math.max(_velocityy + deltaTime * _acelerationy, -1.5e11);
+			}
+		} else if(render.getZoomWidth() < 1e13){
 			if (_acelerationx >= 0){
 				_velocityx = (float) Math.min(_velocityx + deltaTime * _acelerationx, .5e14);
 			} else {
 				_velocityx = (float) Math.max(_velocityx + deltaTime * _acelerationx, -.5e14);
 			}
-			// Setting y velocity at a far distance based on acceleration
 			if(_acelerationy >= 0)
 			{
 				_velocityy = (float) Math.min(_velocityy + deltaTime * _acelerationy, .5e14);
 			} else {
 				_velocityy = (float) Math.max(_velocityy + deltaTime * _acelerationy, -5.e14);
 			}
+		} else {
+			if (_acelerationx >= 0){
+				_velocityx = (float) Math.min(_velocityx + deltaTime * _acelerationx, 1e16);
+			} else {
+				_velocityx = (float) Math.max(_velocityx + deltaTime * _acelerationx, -1e16);
+			}
+			if(_acelerationy >= 0)
+			{
+				_velocityy = (float) Math.min(_velocityy + deltaTime * _acelerationy, 1e16);
+			} else {
+				_velocityy = (float) Math.max(_velocityy + deltaTime * _acelerationy, -1e16);
+			}
 		}
+		
 		_posx = _posx + (long)(_velocityx*deltaTime);
 		_posy = _posy + (long)(_velocityy*deltaTime);
 		render.setCenterPosistion(_posx, _posy);
@@ -157,8 +183,13 @@ public class World implements MessageListener {
 			}
 		}
 	}
-	
-	
-	
+	public float getVelocityx()
+	{
+		return _velocityx;
+	}
+	public float getVelocityy()
+	{
+		return _velocityy;
+	}
 	
 }

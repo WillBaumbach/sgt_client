@@ -141,8 +141,6 @@ public class SpaceGameThing extends ApplicationAdapter
 		
 		
 		
-		
-		
 		// Set the "x" in the corner of the inventory to close the window
 		menuScreenMain.getCloseButton().addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
@@ -167,6 +165,7 @@ public class SpaceGameThing extends ApplicationAdapter
 	@Override
 	public void render ()
 	{
+		
 		cam.update();
 		//batch.setProjectionMatrix(cam.combined);
 		
