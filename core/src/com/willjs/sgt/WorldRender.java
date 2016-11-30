@@ -1,5 +1,8 @@
 package com.willjs.sgt;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,6 +21,8 @@ public class WorldRender
 	private ArrayList<CelestialBody> _cbArrayD = new ArrayList<CelestialBody>();
 	private ArrayList<CelestialBody> _cbArrayN = new ArrayList<CelestialBody>();
 	private ArrayList<CelestialBody> _cbAll = new ArrayList<CelestialBody>();
+	
+	private HashMap<String, Entity> _entities = new HashMap<String, Entity>();
 	
 	private OrthographicCamera _cam;
 	private float _windowHeight, _windowWidth;
@@ -55,7 +60,34 @@ public class WorldRender
 			}
 			_cbAll = cbAllNew;
 		}
-	}	
+	}
+	
+	synchronized public void processEntityWorldData(Request r)
+	{
+		if(r.getRequest().equals("NEARBYENT")){
+			Set<String> oldEnts = new HashSet<String>(_entities.keySet());
+			
+			JSONArray coords = r.getJSONMessage().getJSONArray("ent");
+			for(Object obj : coords)
+			{
+				JSONObject e = (JSONObject)obj;
+				String eid = e.getString("id");
+				
+				oldEnts.remove(eid);
+				if(_entities.containsKey(eid)){
+					_entities.get(eid).update(e);
+				}else{
+					Entity ent = new Entity(e);
+					_entities.put(eid, ent);
+					System.out.println("Added Entity");
+				}
+			}
+			for(String oid : oldEnts){
+				System.out.println("Removed Entity");
+				_entities.remove(oid);
+			}
+		}
+	}
 	
 	public ArrayList<CelestialBody> getCBArray()
 	{
@@ -106,7 +138,7 @@ public class WorldRender
 		
 	}
 	
-	public void render(SpriteBatch batch){
+	synchronized public void render(SpriteBatch batch){
 		for(CelestialBody cb : _cbAll){
 			Sprite s = cb.getSprite();
 			if(s == null){
@@ -115,6 +147,17 @@ public class WorldRender
 			}
 			s.draw(batch);
 		}
+		
+		for(Entity e : _entities.values()){
+			Sprite s = e.getSprite();
+			if(s == null){
+				e.createSprite();
+				s = e.getSprite();
+			}
+			s.draw(batch);
+			System.out.println("Rendering Entity");
+		}
+		
 		spaceship.setSize((float)(_zoomWidth * .01) , (float)(_zoomWidth * .01));
 		spaceship.setPosition(_cam.position.x,_cam.position.y);
 		spaceship.draw(batch);

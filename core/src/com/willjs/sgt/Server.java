@@ -148,6 +148,7 @@ public class Server implements MessageListener {
 	
 	// Sends a message to client with given response id
 	public int sendReply(String req, int respid, String msg){
+		System.out.println("Send: " +req + " " + respid + " " + msg );
 		while(_session == null || _session.getRemote() == null){ // really bad, but...
 			try {
 				TimeUnit.SECONDS.sleep(1);

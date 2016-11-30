@@ -77,7 +77,7 @@ public class SpaceGameThing extends ApplicationAdapter
 	@Override
 	public void create ()
 	{
-		_server = new Server("ws://localhost:1111", "1");
+		_server = new Server("ws://localhost:1111", "2");
 		while(!_server.isAuthenticated()){ // wait for client to connect
 			try {
 				TimeUnit.SECONDS.sleep(1);

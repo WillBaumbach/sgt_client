@@ -1,5 +1,7 @@
 package com.willjs.sgt;
 
+import java.util.HashMap;
+
 import org.json.JSONObject;
 
 import com.badlogic.gdx.Gdx;
@@ -16,12 +18,12 @@ public class World implements MessageListener {
 	private float _velocityy;
 	private float _acelerationx;
 	private float _acelerationy;
-	private float _mass;
 	private WorldRender render = new WorldRender();
 	
 	private long _lastNearbyRequestx = 0;
 	private long _lastNearbyRequesty = 0;
 	private long _lastSentLocationTime = 0;
+	private long _lastNearybEntityTime = 0;
 	
 	private final long NEARBY_DISTANCE = (long)1e13;
 	private final long NEARBY_ZOOM = (long)1e13;
@@ -32,6 +34,7 @@ public class World implements MessageListener {
 		_server.addMessageListener("YOURPOS", this);
 		_server.addMessageListener("NEARBY", this);
 		_server.addMessageListener("DISTANT", this);
+		_server.addMessageListener("NEARBYENT", this);
 		
 		_lastSentLocationTime = System.currentTimeMillis();
 		
@@ -57,7 +60,13 @@ public class World implements MessageListener {
 			render.processWorldData(r);
 		}else if(r.getRequest().equals("DISTANT")){
 			render.processWorldData(r);
+		}else if(r.getRequest().equals("NEARBYENT")){
+			render.processEntityWorldData(r);
 		}
+	}
+	
+	void processEntityData(){
+		
 	}
 	
 	WorldRender getRenderer(){
@@ -155,6 +164,11 @@ public class World implements MessageListener {
 				_lastNearbyRequestx = _posx;
 				_lastNearbyRequesty = _posy;
 			}
+		}
+		
+		if(System.currentTimeMillis() - _lastNearybEntityTime > 200){
+			_server.send("NEARBYENT?", Long.toString(NEARBY_ZOOM));
+			_lastNearybEntityTime = System.currentTimeMillis();
 		}
 	}
 	
