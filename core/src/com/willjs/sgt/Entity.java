@@ -30,7 +30,7 @@ public class Entity {
 		}
 		
 		_sprite = new Sprite(texture);
-		_sprite.setSize(0.5e13f,0.5e13f);
+		_sprite.setSize(.2e11f,.2e11f);
 		_sprite.setPosition(_xcoord, _ycoord);
 	}
 
